@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
@@ -57,13 +57,27 @@ interface FlipbookProps {
    pages: { front: React.ReactNode; back: React.ReactNode }[];
 }
 
+function useIsMobile() {
+   const [isMobile, setIsMobile] = useState(false);
+
+   useEffect(() => {
+      const media = window.matchMedia("(max-width: 768px)");
+      const update = () => setIsMobile(media.matches);
+
+      update(); // initial
+      media.addEventListener("change", update);
+
+      return () => media.removeEventListener("change", update);
+   }, []);
+
+   return isMobile;
+}
+
 export const Flipbook = ({ pages }: FlipbookProps) => {
    const [currentPage, setCurrentPage] = useState(0);
    const [isFocusedBook, setIsFocusedBook] = useState(false);
 
-   const isMobile =
-      typeof window !== "undefined" &&
-      window.matchMedia("(max-width: 768px)").matches;
+   const isMobile = useIsMobile();
 
    const nextPage = () => {
       if (currentPage < pages.length) {
@@ -84,12 +98,19 @@ export const Flipbook = ({ pages }: FlipbookProps) => {
    return (
       <div className="relative flex flex-col items-center justify-center">
          {/* Book Container */}
-         <div className="relative min-w-[600px] h-[400px] perspective-1000">
+         <div
+            className="relative min-w-[320px] md:min-w-[600px] h-[400px]"
+            style={{ perspective: isMobile ? "none" : "1000px" }}
+         >
             {/* Pages */}
             <div
-               className={`absolute min-w-full right-0 h-full transition-transform duration-500 ease-in-out ${isFocusedBook ? "scale-100 translate-x-76" : "scale-110 md:scale-125 translate-x-46"}`}
+               className={`absolute min-w-full right-0 h-full transition-transform duration-500 ease-in-out ${
+                  isFocusedBook
+                     ? "scale-100 translate-x-0 md:translate-x-24 lg:translate-x-76"
+                     : "scale-100 md:scale-110 lg:scale-115 translate-x-20 md:translate-x-12 lg:translate-x-46"
+               }`}
                style={{
-                  transformStyle: "preserve-3d",
+                  transformStyle: isMobile ? "flat" : "preserve-3d",
                   width: "100%",
                   height: "100%",
                }}
