@@ -15,7 +15,7 @@ interface PageProps {
 const Page = ({ front, back, isFlipped, zIndex }: PageProps) => {
    return (
       <motion.div
-         className="absolute top-0 left-0 min-w-[600px] h-full origin-left"
+         className="absolute top-0 left-0 min-w-[400px] h-full origin-left"
          style={{
             transformStyle: "preserve-3d",
             zIndex,
@@ -23,7 +23,7 @@ const Page = ({ front, back, isFlipped, zIndex }: PageProps) => {
          animate={{ rotateY: isFlipped ? -180 : 0 }}
          transition={{
             duration: 0.6,
-            type: "spring",
+            type: "keyframes",
             stiffness: 260,
             damping: 20,
          }}
@@ -82,9 +82,13 @@ export const Flipbook = ({ pages }: FlipbookProps) => {
          <div className="relative min-w-[600px] h-[400px] perspective-1000">
             {/* Pages */}
             <div
-               className={`absolute min-w-full right-0 h-full transition-transform duration-500 ease-in-out ${isFocusedBook ? "scale-100 translate-x-76" : "scale-150"}`}
-               style={{ transformStyle: "preserve-3d" }}
-               onClick={() => setIsFocusedBook((prev) => !prev)}
+               className={`absolute min-w-full right-0 h-full transition-transform duration-500 ease-in-out ${isFocusedBook ? "scale-100 translate-x-76" : "scale-150 translate-x-46"}`}
+               style={{
+                  transformStyle: "preserve-3d",
+                  width: "100%",
+                  height: "100%",
+               }}
+               onClick={() => setIsFocusedBook(true)}
             >
                {pages.map((page, index) => {
                   let zIndex = 0;
@@ -108,6 +112,14 @@ export const Flipbook = ({ pages }: FlipbookProps) => {
                   );
                })}
             </div>
+            {/* Click Book Text */}
+            <motion.div
+               className={`absolute -top-2/6 -left-1/12 text-foreground text-lg font-bold transition-opacity duration-300 ease-in-out ${isFocusedBook ? "opacity-0" : "opacity-100"}`}
+               initial={{ rotateY: -30, rotateZ: -10 }}
+               animate={{ rotateY: -30, rotateZ: -10 }}
+            >
+               Click Book to See
+            </motion.div>
          </div>
 
          {/* Controls */}
