@@ -10,17 +10,18 @@ interface PageProps {
    pageIndex: number;
    isFlipped: boolean;
    zIndex: number;
+   isMobile: boolean;
 }
 
-const Page = ({ front, back, isFlipped, zIndex }: PageProps) => {
+const Page = ({ front, back, isFlipped, zIndex, isMobile }: PageProps) => {
    return (
       <motion.div
          className="absolute top-0 left-0 min-w-[400px] h-full origin-left"
          style={{
-            transformStyle: "preserve-3d",
+            transformStyle: isMobile ? "flat" : "preserve-3d",
             zIndex,
          }}
-         animate={{ rotateY: isFlipped ? -180 : 0 }}
+         animate={{ rotateY: isMobile ? 0 : isFlipped ? -180 : 0 }}
          transition={{
             duration: 0.6,
             type: "keyframes",
@@ -60,6 +61,10 @@ export const Flipbook = ({ pages }: FlipbookProps) => {
    const [currentPage, setCurrentPage] = useState(0);
    const [isFocusedBook, setIsFocusedBook] = useState(false);
 
+   const isMobile =
+      typeof window !== "undefined" &&
+      window.matchMedia("(max-width: 768px)").matches;
+
    const nextPage = () => {
       if (currentPage < pages.length) {
          setCurrentPage(currentPage + 1);
@@ -82,7 +87,7 @@ export const Flipbook = ({ pages }: FlipbookProps) => {
          <div className="relative min-w-[600px] h-[400px] perspective-1000">
             {/* Pages */}
             <div
-               className={`absolute min-w-full right-0 h-full transition-transform duration-500 ease-in-out ${isFocusedBook ? "scale-100 translate-x-76" : "scale-150 translate-x-46"}`}
+               className={`absolute min-w-full right-0 h-full transition-transform duration-500 ease-in-out ${isFocusedBook ? "scale-100 translate-x-76" : "scale-110 md:scale-125 translate-x-46"}`}
                style={{
                   transformStyle: "preserve-3d",
                   width: "100%",
@@ -91,14 +96,10 @@ export const Flipbook = ({ pages }: FlipbookProps) => {
                onClick={() => setIsFocusedBook(true)}
             >
                {pages.map((page, index) => {
-                  let zIndex = 0;
-                  if (index < currentPage) {
-                     // Flipped (Left side)
-                     zIndex = index + 1;
-                  } else {
-                     // Not flipped (Right side)
-                     zIndex = pages.length - index;
-                  }
+                  if (Math.abs(index - currentPage) > 2) return null;
+
+                  const zIndex =
+                     index < currentPage ? index + 1 : pages.length - index;
 
                   return (
                      <Page
@@ -108,6 +109,7 @@ export const Flipbook = ({ pages }: FlipbookProps) => {
                         pageIndex={index}
                         isFlipped={index < currentPage}
                         zIndex={zIndex}
+                        isMobile={isMobile}
                      />
                   );
                })}
