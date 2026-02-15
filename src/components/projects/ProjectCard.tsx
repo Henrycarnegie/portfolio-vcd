@@ -22,7 +22,7 @@ export function ProjectCard({
 }: ProjectCardProps) {
    return (
       <motion.div
-         className="group relative shrink-0 w-[300px] md:w-[400px] h-[400px] md:h-[500px] bg-white rounded-none md:rounded-lg overflow-hidden cursor-pointer"
+         className="group relative shrink-0 w-[300px] md:w-[400px] h-[400px] md:h-[500px] bg-white rounded-none md:rounded-lg overflow-hidden cursor-pointer will-change-transform"
          whileHover={{ y: -10 }}
          transition={{ duration: 0.4, ease: "easeOut" }}
       >
@@ -37,6 +37,7 @@ export function ProjectCard({
                      src={image}
                      alt={title}
                      fill
+                     sizes="(max-width: 768px) 100vw, 400px"
                      className="object-cover"
                   />
                </div>

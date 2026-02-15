@@ -65,7 +65,7 @@ export function Projects() {
             </div>
 
             <motion.div
-               style={{ x }}
+               style={{ x, willChange: "transform" }}
                className="flex gap-8 pl-6 md:pl-12 w-max"
             >
                {projects.map((project, idx) => (

@@ -28,9 +28,9 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({
          {isVisible && (
             <motion.div
                className="fixed inset-0 z-50 flex items-center justify-center bg-[#cdc3e8] overflow-hidden"
-               initial={{y: -1000, opacity: 1 }}
-               animate={{y: 0, opacity: 1 }}
-               transition={{ duration: 2, ease: [0.16, 1, 0.3, 1] }}
+               initial={{ y: -1000, opacity: 1 }}
+               animate={{ y: 0, opacity: 1 }}
+               transition={{ duration: 1.5, ease: [0.16, 1, 0.3, 1] }}
                exit={{
                   y: 0,
                   opacity: 0,
